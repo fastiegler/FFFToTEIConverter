@@ -12,13 +12,13 @@ public class FileReaderWriter {
 	private File out;
 
 	public FileReaderWriter() {
-		in = new File("in.FFF");
+		in = new File(System.getProperty("user.dir")+"\\XML_TEI\\in.FFF");
 		try {
 			br = new BufferedReader(new FileReader(in));
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		}
-		out = new File("out.xml");
+		out = new File(System.getProperty("user.dir")+"\\XML_TEI\\out.xml");
 		if (!out.exists()) {
 			try {
 				out.createNewFile();
@@ -35,13 +35,13 @@ public class FileReaderWriter {
 		}
 	}
 	public FileReaderWriter(String pathIn, String pathOut) {
-		in = new File(pathIn);
+		in = new File(System.getProperty("user.dir")+"\\XML_TEI\\"+pathIn);
 		try {
 			br = new BufferedReader(new FileReader(in));
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		}
-		out = new File(pathOut);
+		out = new File(System.getProperty("user.dir")+"\\XML_TEI\\"+pathOut);
 		if (!out.exists()) {
 			try {
 				out.createNewFile();

@@ -6,7 +6,7 @@ public class refactorXML {
 	private static ArrayList<String> delL;
 	public static void main(String[] args) {
 		initDelList();
-		
+		System.out.println(System.getProperty("user.dir"));
 		file=new FileReaderWriter("in.FFF","out.xml");
 		while(replaceLine());
 	}
