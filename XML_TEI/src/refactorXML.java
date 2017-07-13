@@ -1,12 +1,10 @@
 import java.util.ArrayList;
 public class refactorXML {
 
-//test
 	private static FileReaderWriter file;
 	private static ArrayList<String> delL;
 	public static void main(String[] args) {
 		initDelList();
-		System.out.println(System.getProperty("user.dir"));
 		file=new FileReaderWriter("in.FFF","out.xml");
 		while(replaceLine());
 	}
