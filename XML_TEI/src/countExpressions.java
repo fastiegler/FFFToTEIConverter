@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class countExpressions {
+	
+	//test :D
 
 	static String[] a = { "AL", "AP", "AS", "AU", "BC", "BD", "BH", "BK", "BO", "BP", "BR", "BT", "CA", "CD", "CE",
 			"CH", "CH", "CM", "CN", "CN", "CR", "CS", "DA", "DC", "DP", "DI", "DL", "DO", "DS", "DV", "EH", "EL", "EN",
