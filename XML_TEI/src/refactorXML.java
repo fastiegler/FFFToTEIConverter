@@ -7,7 +7,6 @@ public class refactorXML {
 	private static ArrayList<String> delL;
 
 	public static void main(String[] args) {
-		System.out.println(g("#nananana lalallala# \\hohoohoh|", "#[ ]# \\}|", "<subst><del>[ ] </del> <add>}</add></subst>"));
 		initDelList();
 		file = new FileReaderWriter("in.FFF", "out.xml");
 		while (replaceLine());
@@ -39,6 +38,23 @@ public class refactorXML {
 			updatedLine = updatedLine.replaceAll(string, "");
 		}
 //
+		if (updatedLine.matches("                                 \\d*")) {
+			updatedLine=refactorString(updatedLine,"                                 [","<fw><seg rend=“zentriert“>[</seg></fw>");
+		}
+		if (updatedLine.matches("                                \\d*")) {
+			updatedLine=refactorString(updatedLine,"                                [","<fw><seg rend=“zentriert“>[</seg></fw>");
+			
+		}
+		if (updatedLine.matches("                               \\d*")) {
+			updatedLine=refactorString(updatedLine,"                               [","<fw><seg rend=“zentriert“>[</seg></fw>");
+			
+		}
+		if (updatedLine.matches(".*<JD:\"T-Druckfahnen/.*\">Druckfahnen/.*</FD:\"T-PAGINA\">.*")) {
+			updatedLine=refactorString(updatedLine,"<JD:\"T-Druckfahnen/[\">Druckfahnen/]</FD:\"T-PAGINA\">","<pb n=\"[\" corresp=\"#sn1513400]0\" …>");
+		}
+		if (updatedLine.matches("<FD:\"T-SEITENSIGLE\"><JD:\"S-.*\">.* <BD-> 2<BD><FC></FD:\"T-SEITENSIGLE\">")) {
+			updatedLine=refactorString(updatedLine,"<FD:\"T-SEITENSIGLE\"><JD:\"S-[\">] <BD-> 2<BD><FC></FD:\"T-SEITENSIGLE\">","<pb … xml:id=\"F_[\"/>");
+		}
 		if (!updatedLine.equals("")) {
 			updatedLine += "\n";
 		}
@@ -68,19 +84,24 @@ public class refactorXML {
 		return input;
 	}
 	private static String getBetween(String x,String o,String z){
+		if (z.equals("")) {
+			return x.substring(x.indexOf(o)+o.length());
+		}
 		return x.substring(x.indexOf(o)+o.length(),x.indexOf(z));
 	}
-	private static String g(String x,String o,String z){
+	
+	//replaces first occurrence of targetPart in inputString with replacementPart
+	private static String refactorString(String inputString,String targetPart,String replacementPart){
 		int pos1=-1,pos2=-1,pos3=-1;
 		String p1="",p2="",p3="";
-		if (o.contains("[")) {
-			pos1=o.indexOf("[");
+		if (targetPart.contains("[")) {
+			pos1=targetPart.indexOf("[");
 		}
-		if (o.contains("]")) {
-			pos2=o.indexOf("]");
+		if (targetPart.contains("]")) {
+			pos2=targetPart.indexOf("]");
 		}
-		if (o.contains("}")) {
-			pos3=o.indexOf("}");
+		if (targetPart.contains("}")) {
+			pos3=targetPart.indexOf("}");
 		}
 		int[] arr= {pos1,pos2,pos3};
 		Arrays.sort(arr);		
@@ -91,12 +112,12 @@ public class refactorXML {
 					i=j;
 			}
 			if (i==0) {
-				p1=getBetween(x, o.substring(0, pos1), o.substring(pos1+1, arr[1]));
+				p1=getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1+1, arr[1]));
 			}
 			else if (i==1) {
-				p1=getBetween(x, o.substring(arr[i-1]+1, pos1), o.substring(pos1+1, arr[2]));
+				p1=getBetween(inputString, targetPart.substring(arr[i-1]+1, pos1), targetPart.substring(pos1+1, arr[2]));
 			}else if (i==2) {
-				p1=getBetween(x, o.substring(arr[i-1]+1, pos1), o.substring(pos1+1));
+				p1=getBetween(inputString, targetPart.substring(arr[i-1]+1, pos1), targetPart.substring(pos1+1));
 			}
 			i=0;
 			for (int j=0;j<arr.length;j++) {
@@ -104,12 +125,12 @@ public class refactorXML {
 					i=j;
 			}
 			if (i==0) {
-				p2=getBetween(x, o.substring(0, pos2), o.substring(pos2+1, arr[1]));
+				p2=getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2+1, arr[1]));
 			}
 			else if (i==1) {
-				p2=getBetween(x, o.substring(arr[i-1]+1, pos2), o.substring(pos2+1, arr[2]));
+				p2=getBetween(inputString, targetPart.substring(arr[i-1]+1, pos2), targetPart.substring(pos2+1, arr[2]));
 			}else if (i==2) {
-				p2=getBetween(x, o.substring(arr[i-1]+1, pos2), o.substring(pos2+1));
+				p2=getBetween(inputString, targetPart.substring(arr[i-1]+1, pos2), targetPart.substring(pos2+1));
 			}
 			i=0;
 			for (int j=0;j<arr.length;j++) {
@@ -117,66 +138,66 @@ public class refactorXML {
 					i=j;
 			}
 			if (i==0) {
-				p3=getBetween(x, o.substring(0, pos3), o.substring(pos3+1, arr[1]));
+				p3=getBetween(inputString, targetPart.substring(0, pos3), targetPart.substring(pos3+1, arr[1]));
 			}
 			else if (i==1) {
-				p3=getBetween(x, o.substring(arr[i-1]+1, pos3), o.substring(pos3+1, arr[2]));
+				p3=getBetween(inputString, targetPart.substring(arr[i-1]+1, pos3), targetPart.substring(pos3+1, arr[2]));
 			}else if (i==2) {
-				p3=getBetween(x, o.substring(arr[i-1]+1, pos3), o.substring(pos3+1));
+				p3=getBetween(inputString, targetPart.substring(arr[i-1]+1, pos3), targetPart.substring(pos3+1));
 			}
 		}
 		else if(pos1!=-1&&pos2!=-1) {
 			if (pos1<pos2) {
-				p1=getBetween(x, o.substring(0, pos1), o.substring(pos1+1,pos2));
-				p2=getBetween(x, o.substring(pos1+1, pos2), o.substring(pos2+1));
+				p1=getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1+1,pos2));
+				p2=getBetween(inputString, targetPart.substring(pos1+1, pos2), targetPart.substring(pos2+1));
 			}
 			else {
-				p2=getBetween(x, o.substring(0, pos2), o.substring(pos2+1,pos1));
-				p1=getBetween(x, o.substring(pos2+1, pos1), o.substring(pos1+1));
+				p2=getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2+1,pos1));
+				p1=getBetween(inputString, targetPart.substring(pos2+1, pos1), targetPart.substring(pos1+1));
 			}
 		}
 		else if(pos1!=-1&&pos3!=-1) {
 			if (pos1<pos2) {
-			p1=getBetween(x, o.substring(0, pos1), o.substring(pos1+1,pos3));
-			p3=getBetween(x, o.substring(pos1+1, pos3), o.substring(pos3+1));
+			p1=getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1+1,pos3));
+			p3=getBetween(inputString, targetPart.substring(pos1+1, pos3), targetPart.substring(pos3+1));
 		}
 		else {
-			p3=getBetween(x, o.substring(0, pos3), o.substring(pos3+1,pos1));
-			p1=getBetween(x, o.substring(pos3+1, pos1), o.substring(pos1+1));
+			p3=getBetween(inputString, targetPart.substring(0, pos3), targetPart.substring(pos3+1,pos1));
+			p1=getBetween(inputString, targetPart.substring(pos3+1, pos1), targetPart.substring(pos1+1));
 		}
 		}
 		else if(pos3!=-1&&pos2!=-1) {
 			if (pos1<pos2) {
-				p3=getBetween(x, o.substring(0, pos3), o.substring(pos3+1,pos2));
-				p2=getBetween(x, o.substring(pos3+1, pos2), o.substring(pos2+1));
+				p3=getBetween(inputString, targetPart.substring(0, pos3), targetPart.substring(pos3+1,pos2));
+				p2=getBetween(inputString, targetPart.substring(pos3+1, pos2), targetPart.substring(pos2+1));
 			}
 			else {
-				p2=getBetween(x, o.substring(0, pos2), o.substring(pos2+1,pos3));
-				p3=getBetween(x, o.substring(pos2+1, pos3), o.substring(pos3+1));
+				p2=getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2+1,pos3));
+				p3=getBetween(inputString, targetPart.substring(pos2+1, pos3), targetPart.substring(pos3+1));
 			}
 		}
 		else if(pos1!=-1) {
-			p1=getBetween(x, o.substring(0, pos1), o.substring(pos1+1));
+			p1=getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1+1));
 		}
 		else if(pos2!=-1) {
-			p2=getBetween(x, o.substring(0, pos2), o.substring(pos2+1));
+			p2=getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2+1));
 		}
 		else if(pos3!=-1) {
-			p3=getBetween(x, o.substring(0, pos3), o.substring(pos3+1));
+			p3=getBetween(inputString, targetPart.substring(0, pos3), targetPart.substring(pos3+1));
 		}
-		if (z.contains("[")&&o.contains("[")) {
-			z=z.substring(0, z.indexOf("["))+p1+z.substring(z.indexOf("[")+1);
-			o=o.substring(0, o.indexOf("["))+p1+o.substring(o.indexOf("[")+1);
+		if (replacementPart.contains("[")&&targetPart.contains("[")) {
+			replacementPart=replacementPart.substring(0, replacementPart.indexOf("["))+p1+replacementPart.substring(replacementPart.indexOf("[")+1);
+			targetPart=targetPart.substring(0, targetPart.indexOf("["))+p1+targetPart.substring(targetPart.indexOf("[")+1);
 		}
-		if (z.contains("]")&&o.contains("]")) {
-			z=z.substring(0, z.indexOf("]"))+p2+z.substring(z.indexOf("]")+1);
-			o=o.substring(0, o.indexOf("]"))+p2+o.substring(o.indexOf("]")+1);
+		if (replacementPart.contains("]")&&targetPart.contains("]")) {
+			replacementPart=replacementPart.substring(0, replacementPart.indexOf("]"))+p2+replacementPart.substring(replacementPart.indexOf("]")+1);
+			targetPart=targetPart.substring(0, targetPart.indexOf("]"))+p2+targetPart.substring(targetPart.indexOf("]")+1);
 		}
-		if (z.contains("}")&&o.contains("}")) {
-			z=z.substring(0, z.indexOf("}"))+p3+z.substring(z.indexOf("}")+1);
-			o=o.substring(0, o.indexOf("}"))+p3+o.substring(o.indexOf("}")+1);
+		if (replacementPart.contains("}")&&targetPart.contains("}")) {
+			replacementPart=replacementPart.substring(0, replacementPart.indexOf("}"))+p3+replacementPart.substring(replacementPart.indexOf("}")+1);
+			targetPart=targetPart.substring(0, targetPart.indexOf("}"))+p3+targetPart.substring(targetPart.indexOf("}")+1);
 		}
-		return replaceS(x, o, z);
+		return replaceS(inputString, targetPart, replacementPart);
 	}
 
 }
