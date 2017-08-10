@@ -37,13 +37,13 @@ public class FileReaderWriter {
 		}
 	}
 	public FileReaderWriter(String pathIn, String pathOut) {
-		in = new File(System.getProperty("user.dir")+"\\XML_TEI\\"+pathIn);
+		in = new File(pathIn);
 		try {
 			br = new BufferedReader(new FileReader(in));
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		}
-		out = new File(System.getProperty("user.dir")+"\\XML_TEI\\"+pathOut);
+		out = new File(pathOut);
 		if (!out.exists()) {
 			try {
 				out.createNewFile();
