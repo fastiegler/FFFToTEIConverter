@@ -10,7 +10,6 @@ public class FileReaderWriter {
 	private BufferedReader br;
 	private File in;
 	private File out;
-//	kfgd
 
 	public FileReaderWriter() {
 		in = new File(System.getProperty("user.dir")+"\\XML_TEI\\in.FFF");
