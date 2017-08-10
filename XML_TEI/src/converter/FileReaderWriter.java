@@ -1,3 +1,4 @@
+package converter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,6 +58,16 @@ public class FileReaderWriter {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public FileReaderWriter(File finleIn, File finleOut) {
+		in = finleIn;
+		try {
+			br = new BufferedReader(new FileReader(in));
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+		}
+		out = finleOut;
 	}
 
 	public String getNextLine() {

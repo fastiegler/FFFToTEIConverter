@@ -1,18 +1,23 @@
+package converter;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class refactorXML {
+public class RefactorXML {
 
-	private static FileReaderWriter file;
-	private static ArrayList<String> delL;
+	private FileReaderWriter file;
+	private ArrayList<String> delL;
 
-	public static void main(String[] args) {
+	public RefactorXML(File input, File output) {
 		initDelList();
-		file = new FileReaderWriter("in.FFF", "out.xml");
+		file = new FileReaderWriter(input, output);
+	}
+	
+	public void startConversion() {
 		while (replaceLine());
 	}
 
-	private static void initDelList() {
+	private void initDelList() {
 		delL = new ArrayList<>();
 		delL.add("<RD:\"EBENE \\d*\">");
 		delL.add("</?FD:\"T-PAGINA\">");
@@ -28,7 +33,7 @@ public class refactorXML {
 		delL.add("<CS:ZEILENZAHL>\\d*</CS>");
 	}
 
-	private static boolean replaceLine() {
+	private boolean replaceLine() {
 		String line = file.getNextLine();
 		if (line == null) {
 			return false;
