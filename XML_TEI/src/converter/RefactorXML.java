@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class RefactorXML {
 
 	private FileReaderWriter file;
-	private ArrayList<String> delL;
+	private ArrayList<String> delList;
 
 	public RefactorXML(File input, File output) {
 		initDelList();
@@ -17,32 +17,35 @@ public class RefactorXML {
 		while (replaceLine());
 	}
 
+	//initialises regularExpressions to delete from text
 	private void initDelList() {
-		delL = new ArrayList<>();
-		delL.add("<RD:\"EBENE \\d*\">");
-		delL.add("</?FD:\"T-PAGINA\">");
-		delL.add("<EL>");
-		delL.add("<JL:Sprung,\"DS-Druckfahnen/?\\d*\">");
-		delL.add("<OB:FO:\".*\\.bmp\",\\d*\\.\\d*,\\d*\\.\\d*>");
-		delL.add("<TB>");
-		delL.add("<FC:\\d*,\\d*,\\d*>");
-		delL.add("<JL:\"SPRUNG alternativ\",\"KK-Drf \\d*\">");
-		delL.add("<RD>");
-		delL.add("<BD\\+><FT:Webdings,SR,SY><PT:10><JL:\".*\">i<BD><FT><PT>");
-		delL.add("<GR:\"Band \\d*\">");
-		delL.add("<CS:ZEILENZAHL>\\d*</CS>");
+		delList = new ArrayList<>();
+		delList.add("<RD:\"EBENE \\d*\">");
+		delList.add("</?FD:\"T-PAGINA\">");
+		delList.add("<EL>");
+		delList.add("<JL:Sprung,\"DS-Druckfahnen/?\\d*\">");
+		delList.add("<OB:FO:\".*\\.bmp\",\\d*\\.\\d*,\\d*\\.\\d*>");
+		delList.add("<TB>");
+		delList.add("<FC:\\d*,\\d*,\\d*>");
+		delList.add("<JL:\"SPRUNG alternativ\",\"KK-Drf \\d*\">");
+		delList.add("<RD>");
+		delList.add("<BD\\+><FT:Webdings,SR,SY><PT:10><JL:\".*\">i<BD><FT><PT>");
+		delList.add("<GR:\"Band \\d*\">");
+		delList.add("<CS:ZEILENZAHL>\\d*</CS>");
 	}
 
+	//line for line:
+	//	-removes expressions from delList
+	//	-refactors strings
 	private boolean replaceLine() {
 		String line = file.getNextLine();
 		if (line == null) {
 			return false;
 		}
 		String updatedLine = line;
-		for (String string : delL) {
+		for (String string : delList) {
 			updatedLine = updatedLine.replaceAll(string, "");
 		}
-//
 		if (updatedLine.matches("                                 \\d*")) {
 			updatedLine=refactorString(updatedLine,"                                 [","<fw><seg rend=“zentriert“>[</seg></fw>");
 		}
@@ -69,6 +72,7 @@ public class RefactorXML {
 		file.appendToOutput(updatedLine);
 		return true;
 	}
+	//replaces @target in @input with @replacement
 	private static String replaceS(String input, String target, String replacement) {
 		int countInput=0,countTarget=0;
 		while (countInput<input.length()) {
@@ -91,11 +95,12 @@ public class RefactorXML {
 		}
 		return input;
 	}
-	private static String getBetween(String x,String o,String z){
-		if (z.equals("")) {
-			return x.substring(x.indexOf(o)+o.length());
+	//returns string in @input between @leftString and @rightString
+	private static String getBetween(String input,String leftString,String rightString){
+		if (rightString.equals("")) {
+			return input.substring(input.indexOf(leftString)+leftString.length());
 		}
-		return x.substring(x.indexOf(o)+o.length(),x.indexOf(z));
+		return input.substring(input.indexOf(leftString)+leftString.length(),input.indexOf(rightString));
 	}
 	
 	//replaces first occurrence of targetPart in inputString with replacementPart

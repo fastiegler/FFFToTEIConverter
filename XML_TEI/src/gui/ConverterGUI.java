@@ -104,7 +104,7 @@ public class ConverterGUI extends JDialog implements ActionListener {
 			        if (returnVal == JFileChooser.APPROVE_OPTION) {
 			        	
 			        	outputFile = fc.getSelectedFile();
-			            txtPathOutput.setText(inputFile.getAbsolutePath());
+			            txtPathOutput.setText(outputFile.getAbsolutePath());
 			        } //else canceled by user so do nothing
 			}
 		});		
