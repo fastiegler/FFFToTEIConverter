@@ -1,3 +1,4 @@
+package converter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +11,7 @@ public class FileReaderWriter {
 	private BufferedReader br;
 	private File in;
 	private File out;
+//	kfgd
 
 	public FileReaderWriter() {
 		in = new File(System.getProperty("user.dir")+"\\XML_TEI\\in.FFF");
@@ -35,13 +37,13 @@ public class FileReaderWriter {
 		}
 	}
 	public FileReaderWriter(String pathIn, String pathOut) {
-		in = new File(pathIn);
+		in = new File(System.getProperty("user.dir")+"\\XML_TEI\\"+pathIn);
 		try {
 			br = new BufferedReader(new FileReader(in));
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		}
-		out = new File(pathOut);
+		out = new File(System.getProperty("user.dir")+"\\XML_TEI\\"+pathOut);
 		if (!out.exists()) {
 			try {
 				out.createNewFile();
@@ -56,6 +58,16 @@ public class FileReaderWriter {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public FileReaderWriter(File finleIn, File finleOut) {
+		in = finleIn;
+		try {
+			br = new BufferedReader(new FileReader(in));
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+		}
+		out = finleOut;
 	}
 
 	public String getNextLine() {
