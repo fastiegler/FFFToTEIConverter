@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class converter {
 
@@ -25,6 +26,8 @@ public class converter {
 	private static fileHelper filehelperIn;
 	private static fileHelper filehelperOut;
 	private static gui.gui window;
+	private static File input=new File(System.getProperty("user.dir") + "\\input");
+	private static File output=new File(System.getProperty("user.dir") + "\\xml.out");
 
 	public static void main(String[] args) {
 		configDel = new File(System.getProperty("user.dir") + "\\D.cfg");
@@ -39,18 +42,23 @@ public class converter {
 		loadDelConfig();
 		loadRepConfig();
 		window = new gui.gui();
-		try {
-			filehelperIn = new fileHelper(System.getProperty("user.dir") + "\\input");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			filehelperOut = new fileHelper(System.getProperty("user.dir") + "\\xml.out");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		openFiles();
 	}
+	
+
+	private static void openFiles() {
+		try {
+			filehelperIn = new fileHelper(input);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			filehelperOut = new fileHelper(output);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	public static void btnTest() {
 		reset();
@@ -121,6 +129,7 @@ public class converter {
 	}
 
 	private static void replaceEverything() {
+		openFiles();
 		String s = "";
 		while (!(s = filehelperIn.getNextLines(count)).equals("null")) {
 			for (String string : delList) {
@@ -361,6 +370,21 @@ public class converter {
 	}
 	public static void enableGUI() {
 		window.enableGUI();
+	}
+
+	public static String setPathsFiles(List<File> files) {
+		String s="";
+		for (File f : files) {
+			if(f.getName().contains(".FFF")) {
+				input=new File(f.getAbsolutePath());
+				s+=f.getName()+"\t";
+			}
+			else if (f.getName().contains(".xml")) {
+				output=new File(f.getAbsolutePath());
+				s+=f.getName()+"\t";
+			}
+		}
+		return s;
 	}
 
 }

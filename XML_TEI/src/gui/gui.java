@@ -84,6 +84,14 @@ public class gui {
 	
 	progressBar.setForeground(Color.GREEN);
 	frmKonvertierer.getContentPane().add(progressBar, BorderLayout.SOUTH);
+	
+	JPanel panel = new JPanel();
+	DropPane drop =new DropPane();
+	panel.add(drop);
+	drop.setSize(50, 50);
+	drop.setBackground(Color.GRAY);
+	drop.setToolTipText("Ziehe .FFF Datei und .xml Datei(optional) in dieses Feld");
+	frmKonvertierer.getContentPane().add(panel, BorderLayout.NORTH);
 	btnTest.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent arg0) {
 			progressBar.setValue(0);
@@ -98,5 +106,6 @@ public class gui {
 	public void enableGUI() {
 		frmKonvertierer.setEnabled(true);
 	}
+	
 	
 }
