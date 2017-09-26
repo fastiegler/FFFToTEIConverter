@@ -32,6 +32,7 @@ public class RefactorXML {
 		delList.add("<BD\\+><FT:Webdings,SR,SY><PT:10><JL:\".*\">i<BD><FT><PT>");
 		delList.add("<GR:\"Band \\d*\">");
 		delList.add("<CS:ZEILENZAHL>\\d*</CS>");
+		delList.add("<PL:Sprung,\"\"\"%%\\fmdr\\fmdr.*\\.jpg\"\"\">");
 	}
 
 	//line for line:
@@ -66,6 +67,34 @@ public class RefactorXML {
 		if (updatedLine.matches("<UN+>.*<UN>")) {
 			updatedLine=refactorString(updatedLine,"<UN+>[<UN>","<hi rend=\"underline\">[</hi>");
 		}
+		if (updatedLine.matches(".*\\.*<PX:\"NUMMERN-POPUP\",\".*\">«.*»\\|.*")) {
+			updatedLine=refactorString(updatedLine,"\\[<PX:\"NUMMERN-POPUP\",\"]\">«}»|","<add hand=\"#]\">[</add>");
+		}
+		if (updatedLine.matches(".*<PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">Deleatur … <LT>°.*")) {
+			updatedLine=refactorString(updatedLine,"<PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">Deleatur … <LT>°","<metamark function=deleatur/>");
+		}
+		if (updatedLine.matches(".*\\°.*°<PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">.*<LT><LT>°\\|.*")) {
+			updatedLine=refactorString(updatedLine,"\\°[°<PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">]<LT><LT>°|","<add hand=\"#]\">[</add>");
+		}
+		if (updatedLine.matches(".*°.*°<PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">.*<LT>°.*")) {
+			updatedLine=refactorString(updatedLine,"°[°<PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">]<LT>°","<zone xml:id=“n“>[</zone><metamark function=“marker“ rend=“]“ target=““#n“/>");
+		}
+		if (updatedLine.matches(".*\\°.*°<PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">.*<LT><LT>°\\|.*")) {
+			updatedLine=refactorString(updatedLine,"\\°[°<PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">]<LT><LT>°|","<add hand=\"#]\">[</add>");
+		}
+		if (updatedLine.matches(".*\\*.*\\* <FT:Wingdings,FX,SY>n<FT>\\\\*.*\\*\\|<FT:Wingdings,FX,SY>n<FT>.*")) {
+			updatedLine=refactorString(updatedLine,"*[* <FT:Wingdings,FX,SY>n<FT>\\*]*|<FT:Wingdings,FX,SY>n<FT>","<subst status=\"erwogen\"><del status=\"ungestrichen\">[</del> \r\n" + 
+					"<add place=“margin“>]</add></subst>");
+		}
+//		if (updatedLine.matches(".*<FT:Symbol,SR,SY>ì<FT>.*<FT:Symbol,SR,SY>ì<FT> \\°<FT:Symbol,SR,SY>ì<FT>.*<FT:Symbol,SR,SY>ì°<FT><PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">.*<LT>°\\|.*")) {
+//		updatedLine=refactorString(updatedLine,"<FT:Symbol,SR,SY>ì<FT>[<FT:Symbol,SR,SY>ì<FT> \\°<FT:Symbol,SR,SY>ì<FT>[<FT:Symbol,SR,SY>ì°<FT><PW:\"POPUP Erläuterung \",2.27083,1.54167,\"Popup-Verknüpfung\">]<LT>°|","<seg function=\"transposition\" xml:id=\"ibn1\">[</seg> <seg><metamark xml:id=\"ibn2\"/></seg><listTranspose><transpose><ptr target=\"#ibn2\"/><ptr target=\"#ibn1\"/></transpose></listTranspose><metamark><note place=\"margin\">]</note></metamark>");
+//	}
+//		if (updatedLine.matches(".*.*")) {
+//		updatedLine=refactorString(updatedLine,"","");
+//	}
+//		if (updatedLine.matches(".*.*")) {
+//		updatedLine=refactorString(updatedLine,"","");
+//	}
 		if (!updatedLine.equals("")) {
 			updatedLine += "\n";
 		}
@@ -210,6 +239,25 @@ public class RefactorXML {
 			replacementPart=replacementPart.substring(0, replacementPart.indexOf("}"))+p3+replacementPart.substring(replacementPart.indexOf("}")+1);
 			targetPart=targetPart.substring(0, targetPart.indexOf("}"))+p3+targetPart.substring(targetPart.indexOf("}")+1);
 		}
+		while(targetPart.contains("[")) {
+			targetPart=targetPart.replace("[", p1);
+		}
+		while(targetPart.contains("]")) {
+			targetPart=targetPart.replace("]", p2);
+		}
+		while(targetPart.contains("}")) {
+			targetPart=targetPart.replace("}", p3);
+		}
+		while(replacementPart.contains("[")) {
+			replacementPart=replacementPart.replace("[", p1);
+		}
+		while(replacementPart.contains("]")) {
+			replacementPart=replacementPart.replace("]", p2);
+		}
+		while(replacementPart.contains("}")) {
+			replacementPart=replacementPart.replace("}", p3);
+		}
+		
 		return replaceS(inputString, targetPart, replacementPart);
 	}
 

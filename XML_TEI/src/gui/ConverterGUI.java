@@ -21,10 +21,11 @@ public class ConverterGUI extends JDialog implements ActionListener {
 	private JTextField txtPathInput;
 	private JTextField txtPathOutput;
 	private JButton okButton;
-	private File inputFile;
-	private File outputFile;
+	private File inputFile=new File(System.getProperty("user.dir")+"\\XML_TEI\\in.FFF");
+	private File outputFile=new File(System.getProperty("user.dir")+"\\XML_TEI\\out.xml");
 	private JLabel lblMsg;
 	private JProgressBar progressBar;
+	private int PROGRESS_MAX= 5;
 
 	/**
 	 * Launch the application.
@@ -43,27 +44,17 @@ public class ConverterGUI extends JDialog implements ActionListener {
 	 * Create the dialog.
 	 */
 	public ConverterGUI() {
+		setTitle("FFF to XML Converter");
+		setResizable(false);
 		setBounds(100, 100, 499, 265);
 		getContentPane().setLayout(null);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setBounds(10, 183, 463, 33);
-			buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
-			getContentPane().add(buttonPane);
-			{
-				okButton = new JButton("Konvertierung starten");
-				okButton.setActionCommand("OK");
-				okButton.addActionListener(this);
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-		}
 		
-		JLabel lblFolioFlatFile = new JLabel("Folio Flat File:");
+		JLabel lblFolioFlatFile = new JLabel("Folio Flat input File:");
 		lblFolioFlatFile.setBounds(10, 11, 105, 27);
 		getContentPane().add(lblFolioFlatFile);
 		
 		txtPathInput = new JTextField();
+		txtPathInput.setText(System.getProperty("user.dir")+"\\XML_TEI\\in.FFF");
 		txtPathInput.setFont(new Font("Tahoma", Font.PLAIN, 8));
 		txtPathInput.setEnabled(false);
 		txtPathInput.setBounds(10, 37, 302, 20);
@@ -75,6 +66,7 @@ public class ConverterGUI extends JDialog implements ActionListener {
 		getContentPane().add(lblOutputFile);
 		
 		txtPathOutput = new JTextField();
+		txtPathOutput.setText(System.getProperty("user.dir")+"\\XML_TEI\\out.xml");
 		txtPathOutput.setFont(new Font("Tahoma", Font.PLAIN, 8));
 		txtPathOutput.setEnabled(false);
 		txtPathOutput.setBounds(10, 96, 302, 20);
@@ -117,9 +109,19 @@ public class ConverterGUI extends JDialog implements ActionListener {
 		getContentPane().add(lblMsg);
 		
 		progressBar = new JProgressBar();
-		progressBar.setVisible(false);
+		progressBar.setEnabled(false);
+		progressBar.setBackground(Color.GRAY);
+		progressBar.setForeground(Color.GREEN);
 		progressBar.setBounds(10, 134, 463, 20);
 		getContentPane().add(progressBar);
+		{
+			okButton = new JButton("Konvertierung starten");
+			okButton.setBounds(137, 190, 209, 23);
+			getContentPane().add(okButton);
+			okButton.setActionCommand("OK");
+			okButton.addActionListener(this);
+			getRootPane().setDefaultButton(okButton);
+		}
 	}
 
 	@Override
@@ -127,19 +129,22 @@ public class ConverterGUI extends JDialog implements ActionListener {
 		if(arg0.getSource() == okButton) {
 			//init Progessbar...
 			progressBar.setVisible(true);
-			progressBar.setMaximum(5); //Die Anzahl der Schritte. TODO: Muss noch angepasst werden...
-			progressBar.setValue(1);
-			
+			progressBar.setMaximum(PROGRESS_MAX); //Die Anzahl der Schritte. TODO: Muss noch angepasst werden...
+			progressBar.setValue(0);
+			lblMsg.setForeground(Color.RED);
 			lblMsg.setText("Konvertierung wurde gestartet...");
-			
 			RefactorXML converter = new RefactorXML(inputFile, outputFile);
 			converter.startConversion();
+			lblMsg.setForeground(Color.GREEN);
+			lblMsg.setText("Konvertierung erfolgreich");
+			progressBar.setValue(PROGRESS_MAX);
 			
 		}
 		
 	}
 	
 	public void makeProgessSteps() {
+		if(progressBar.getValue()<PROGRESS_MAX)
 		progressBar.setValue(progressBar.getValue() + 1);
 	}
 }
