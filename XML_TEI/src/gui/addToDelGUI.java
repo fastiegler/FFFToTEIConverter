@@ -19,7 +19,7 @@ public class addToDelGUI {
 		frmZuLschendenAusdruck = new JFrame("");
 		frmZuLschendenAusdruck.setTitle("Zu l\u00F6schenden Ausdruck hinzuf\u00FCgen");
 		frmZuLschendenAusdruck.setSize(800, 700);
-		frmZuLschendenAusdruck.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmZuLschendenAusdruck.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmZuLschendenAusdruck.getContentPane().setLayout(new BorderLayout(0, 0));
 		textReplace = new JTextField();
 		textReplace.setToolTipText("Zu ersetzender Ausdruck\r\nz.B: \"<EL>\"");
@@ -47,7 +47,6 @@ public class addToDelGUI {
 			}
 		});
 		frmZuLschendenAusdruck.setVisible(true);
-		frmZuLschendenAusdruck.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	private void reset() {
 		newConverter.converter.enableGUI();

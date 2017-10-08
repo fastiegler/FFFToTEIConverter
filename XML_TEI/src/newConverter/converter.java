@@ -26,39 +26,37 @@ public class converter {
 	private static fileHelper filehelperIn;
 	private static fileHelper filehelperOut;
 	private static gui.gui window;
-	private static File input=new File(System.getProperty("user.dir") + "\\input");
-	private static File output=new File(System.getProperty("user.dir") + "\\xml.out");
+	private static File input = new File(System.getProperty("user.dir") + "\\input");
+	private static File output = new File(System.getProperty("user.dir") + "\\xml.out");
 
 	public static void main(String[] args) {
 		configDel = new File(System.getProperty("user.dir") + "\\D.cfg");
 		configRep0 = new File(System.getProperty("user.dir") + "\\R0.cfg");
 		configRep1 = new File(System.getProperty("user.dir") + "\\R1.cfg");
 		configRep2 = new File(System.getProperty("user.dir") + "\\R2.cfg");
-		delList = new ArrayList<>();
-		repList0 = new ArrayList<>();
-		repList1 = new ArrayList<>();
-		repList2 = new ArrayList<>();
-
-		loadDelConfig();
-		loadRepConfig();
+		reloadConfigs();
 		window = new gui.gui();
 		openFiles();
 	}
-	
 
 	private static void openFiles() {
 		try {
+			if (filehelperIn != null) {
+				filehelperIn.close();
+			}
 			filehelperIn = new fileHelper(input);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		try {
+			if (filehelperOut != null) {
+				filehelperOut.close();
+			}
 			filehelperOut = new fileHelper(output);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
 
 	public static void btnTest() {
 		reset();
@@ -68,10 +66,13 @@ public class converter {
 	}
 
 	private static void reloadConfigs() {
+		delList = new ArrayList<>();
 		loadDelConfig();
+		repList0 = new ArrayList<>();
+		repList1 = new ArrayList<>();
+		repList2 = new ArrayList<>();
 		loadRepConfig();
 	}
-
 
 	public static void reset() {
 		try {
@@ -81,7 +82,7 @@ public class converter {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	public static void addLine() {
@@ -90,6 +91,9 @@ public class converter {
 
 	private static void loadDelConfig() {
 		try {
+			if (fileHelpConfigDel != null) {
+				fileHelpConfigDel.close();
+			}
 			fileHelpConfigDel = new fileHelper(configDel);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -102,6 +106,9 @@ public class converter {
 
 	private static void loadRepConfig() {
 		try {
+			if (fileHelpConfigRep != null) {
+				fileHelpConfigRep.close();
+			}
 			fileHelpConfigRep = new fileHelper(configRep0);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -111,6 +118,7 @@ public class converter {
 			repList0.add(s);
 		}
 		try {
+			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep1);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -119,6 +127,7 @@ public class converter {
 			repList1.add(s);
 		}
 		try {
+			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep2);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -179,6 +188,9 @@ public class converter {
 	private static String getBetween(String input, String leftString, String rightString) {
 		if (rightString.equals("")) {
 			return input.substring(input.indexOf(leftString) + leftString.length());
+		}
+		else if(leftString.equals("")) {
+			return input.substring(0,input.indexOf(rightString));
 		}
 		return input.substring(input.indexOf(leftString) + leftString.length(), input.indexOf(rightString));
 	}
@@ -315,73 +327,93 @@ public class converter {
 	public static void addToDelConfig(String s) {
 		if (fileHelpConfigDel == null) {
 			try {
+				fileHelpConfigDel.close();
 				fileHelpConfigDel = new fileHelper(configDel);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		fileHelpConfigDel.appendToFile("\n"+s);
+		fileHelpConfigDel.appendToFile("\n" + s);
 	}
 
 	public static void addToRepConfig(String replace, String with) {
 		try {
+			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep0);
-			String tmp=replace;
+			String tmp = replace;
 			while (tmp.contains(D_0)) {
-				tmp=tmp.replace(D_0, ".*");
+				tmp = tmp.replace(D_0, ".*");
 			}
 			while (tmp.contains(D_1)) {
-				tmp=tmp.replace(D_1, ".*");
+				tmp = tmp.replace(D_1, ".*");
 			}
 			while (tmp.contains(D_2)) {
-				tmp=tmp.replace(D_2, ".*");
+				tmp = tmp.replace(D_2, ".*");
 			}
-			tmp=".*"+tmp+".*";
-			fileHelpConfigRep.appendToFile("\n"+tmp);
+			tmp = ".*" + tmp + ".*";
+			fileHelpConfigRep.appendToFile("\n" + tmp);
+			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep1);
-			fileHelpConfigRep.appendToFile("\n"+replace);
+			fileHelpConfigRep.appendToFile("\n" + replace);
+			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep2);
-			fileHelpConfigRep.appendToFile("\n"+with);
+			fileHelpConfigRep.appendToFile("\n" + with);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 	public static void replaceDs(String s, String ss, String sss) {
 		try {
-			fileHelpConfigRep = new fileHelper(configRep0);
-			String tt="";
-			while (!(tt=fileHelpConfigRep.getNextLine()).equals("null")) {
-				tt.replaceAll(D_0, s);
+			if (!s.equals(D_0)) {
+				fileHelpConfigRep.close();
+				fileHelpConfigRep = new fileHelper(configRep0);
+				fileHelpConfigRep.replaceDs(D_0, s);
+				fileHelpConfigRep.close();
+				fileHelpConfigRep = new fileHelper(configRep1);
+				fileHelpConfigRep.replaceDs(D_0, s);
+				fileHelpConfigRep.close();
+				fileHelpConfigRep = new fileHelper(configRep2);
+				fileHelpConfigRep.replaceDs(D_0, s);
+				D_0 = s;
 			}
-			D_0=s;
-			fileHelpConfigRep = new fileHelper(configRep1);
-			while (!(tt=fileHelpConfigRep.getNextLine()).equals("null")) {
-				tt.replaceAll(D_1, ss);
+			if (!ss.equals(D_1)) {
+				fileHelpConfigRep.close();
+				fileHelpConfigRep = new fileHelper(configRep0);
+				fileHelpConfigRep.replaceDs(D_1, ss);
+				fileHelpConfigRep = new fileHelper(configRep1);
+				fileHelpConfigRep.replaceDs(D_1, ss);
+				fileHelpConfigRep = new fileHelper(configRep2);
+				fileHelpConfigRep.replaceDs(D_1, ss);
+				D_1 = ss;
 			}
-			D_1=s;
-			fileHelpConfigRep = new fileHelper(configRep2);
-			while (!(tt=fileHelpConfigRep.getNextLine()).equals("null")) {
-				tt.replaceAll(D_2, sss);
+			if (!sss.equals(D_2)) {
+				fileHelpConfigRep.close();
+				fileHelpConfigRep = new fileHelper(configRep0);
+				fileHelpConfigRep.replaceDs(D_2, sss);
+				fileHelpConfigRep = new fileHelper(configRep1);
+				fileHelpConfigRep.replaceDs(D_2, sss);
+				fileHelpConfigRep = new fileHelper(configRep2);
+				fileHelpConfigRep.replaceDs(D_2, sss);
+				D_2 = sss;
 			}
-			D_2=s;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 	public static void enableGUI() {
 		window.enableGUI();
 	}
 
-	public static String setPathsFiles(List<File> files) {
-		String s="";
+	public static String setPathsFiles(List<File> files, String s) {
 		for (File f : files) {
-			if(f.getName().contains(".FFF")) {
-				input=new File(f.getAbsolutePath());
-				s+=f.getName()+"\t";
-			}
-			else if (f.getName().contains(".xml")) {
-				output=new File(f.getAbsolutePath());
-				s+=f.getName()+"\t";
+			if (f.getName().contains(".FFF")) {
+				input = new File(f.getAbsolutePath());
+				s += f.getName() + "\t";
+			} else if (f.getName().contains(".xml")) {
+				output = new File(f.getAbsolutePath());
+				s += f.getName() + "\t";
 			}
 		}
 		return s;

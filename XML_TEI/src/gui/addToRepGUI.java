@@ -22,7 +22,7 @@ public class addToRepGUI {
 		frmZuErsetzendenAusdruck = new JFrame("");
 		frmZuErsetzendenAusdruck.setTitle("Zu ersetzenden Ausdruck hinzuf\u00FCgen");
 		frmZuErsetzendenAusdruck.setSize(510, 353);
-		frmZuErsetzendenAusdruck.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmZuErsetzendenAusdruck.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmZuErsetzendenAusdruck.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		panel = new JPanel();
@@ -60,7 +60,6 @@ public class addToRepGUI {
 			}
 		});
 		frmZuErsetzendenAusdruck.setVisible(true);
-		frmZuErsetzendenAusdruck.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	private void reset() {
 		newConverter.converter.enableGUI();

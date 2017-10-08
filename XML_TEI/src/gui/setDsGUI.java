@@ -18,8 +18,7 @@ public class setDsGUI {
 	private JButton btnCancel;
 
 	public setDsGUI() {
-		frame = new JFrame("SS-ER");
-		frame.setTitle("");
+		frame = new JFrame("");
 		frame.setSize(800, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));

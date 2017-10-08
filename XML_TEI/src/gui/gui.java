@@ -62,8 +62,7 @@ public class gui {
 	});
 	panel_1.add(btnAddtorep);
 	
-	JButton btnChangeds = new JButton("noch nicht implementiert");
-	btnChangeds.setEnabled(false);
+	JButton btnChangeds = new JButton("Variablen setzen");
 	btnChangeds.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			progressBar.setValue(0);
