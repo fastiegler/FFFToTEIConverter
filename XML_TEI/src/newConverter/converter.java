@@ -58,7 +58,7 @@ public class converter {
 		}
 	}
 
-	public static void btnTest() {
+	public static void btnConvert() {
 		reset();
 		reloadConfigs();
 		replaceEverything();
@@ -140,7 +140,7 @@ public class converter {
 	private static void replaceEverything() {
 		openFiles();
 		String s = "";
-		while (!(s = filehelperIn.getNextLines(count)).equals("null")) {
+		while ((s = filehelperIn.getNextLines(count))!=null) {
 			for (String string : delList) {
 				s = s.replaceAll(string, "");
 			}
@@ -159,169 +159,162 @@ public class converter {
 		}
 	}
 
-	// replaces @target in @input with @replacement
-	private static String replaceS(String input, String target, String replacement) {
-		int countInput = 0, countTarget = 0;
-		while (countInput < input.length()) {
-			while (countInput < input.length() && input.charAt(countInput) != target.charAt(countTarget)) {
-				countInput++;
-			}
-			if (countInput == input.length()) {
-				break;
-			}
-			int start = countInput;
-			while (countTarget < target.length() && countInput < input.length()
-					&& input.charAt(countInput) == target.charAt(countTarget)) {
-				countInput++;
-				countTarget++;
-			}
-			if (countTarget == target.length()) {
-				input = input.substring(0, start) + replacement + input.substring(countInput);
-				return input;
-			}
-			countTarget = 0;
-		}
-		return input;
-	}
-
 	// returns string in @input between @leftString and @rightString
 	private static String getBetween(String input, String leftString, String rightString) {
-		if (rightString.equals("")) {
-			return input.substring(input.indexOf(leftString) + leftString.length());
+		if (leftString.equals("")&&rightString.equals("")) {
+			return "";
 		}
-		else if(leftString.equals("")) {
-			return input.substring(0,input.indexOf(rightString));
+		if (!(input.contains(leftString) && input.contains(rightString))) {
+			System.out.println(input);
+			System.out.println(leftString + "\t" + rightString);
+			return null;
 		}
-		return input.substring(input.indexOf(leftString) + leftString.length(), input.indexOf(rightString));
+		String ret = input;
+		if (!leftString.equals(""))
+		ret=ret.substring(ret.indexOf(leftString)+leftString.length());
+		if (!rightString.equals(""))
+		ret=ret.substring(0,ret.indexOf(rightString)+rightString.length()-1);
+		if (!leftString.equals(""))
+			ret = ret.replace(leftString, "");
+		if (!rightString.equals(""))
+			ret = ret.replace(rightString, "");
+		return ret;
 	}
 
 	// replaces first occurrence of targetPart in inputString with replacementPart
 	private static String refactorString(String inputString, String targetPart, String replacementPart) {
-		int pos1 = -1, pos2 = -1, pos3 = -1;
-		String p1 = "", p2 = "", p3 = "";
+		int pos0 = -1, pos1 = -1, pos2 = -1;
+		String p0 = "", p1 = "", p2 = "";
+		boolean b0=false,b1=false,b2=false;
 		if (targetPart.contains(D_0)) {
-			pos1 = targetPart.indexOf(D_0);
+			pos0 = targetPart.indexOf(D_0);
+			b0=true;
+		}
+		else {
+			targetPart=targetPart+D_0;
+			pos0 = targetPart.indexOf(D_0);
 		}
 		if (targetPart.contains(D_1)) {
-			pos2 = targetPart.indexOf(D_1);
+			pos1 = targetPart.indexOf(D_1);
+			b1=true;
+		}
+		else {
+			targetPart=targetPart+D_1;
+			pos1 = targetPart.indexOf(D_1);
 		}
 		if (targetPart.contains(D_2)) {
-			pos3 = targetPart.indexOf(D_2);
+			pos2 = targetPart.indexOf(D_2);
+			b2=true;
 		}
-		int[] arr = { pos1, pos2, pos3 };
+		else {
+			targetPart=targetPart+D_2;
+			pos2 = targetPart.indexOf(D_2);
+		}
+		int[] arr = { pos0, pos1, pos2 };
 		Arrays.sort(arr);
-		if (pos1 != -1 && pos2 != -1 && pos3 != -1) {
+		// all 3 variables found
+		if (pos0 != -1 && pos1 != -1 && pos2 != -1) {
 			int i = 0;
+			for (int j = 0; j < arr.length; j++) {
+				if (arr[j] == pos0) {
+					i = j;
+					break;
+				}
+			}
+			// pos0 leftmost
+			if (i == 0) {
+				p0 = getBetween(inputString, targetPart.substring(0, pos0),
+						targetPart.substring(pos0 + D_0.length(), arr[i + 1]));
+			}
+			// pos0 middle
+			else if (i == 1) {
+				p0 = getBetween(inputString, targetPart.substring(arr[i - 1] + D_0.length(), pos0),
+						targetPart.substring(pos0 + D_0.length(), arr[i + 1]));
+			}
+			// pos0 rigthmost
+			else if (i == 2) {
+				int offset = D_1.length();
+				if (pos1 < pos2) {
+					offset = D_2.length();
+				}
+				p0 = getBetween(inputString, targetPart.substring(arr[i - 1] + offset, pos0),
+						targetPart.substring(pos0 + D_0.length()));
+			}
+			i = 0;
 			for (int j = 0; j < arr.length; j++) {
 				if (arr[j] == pos1)
 					i = j;
 			}
+			// pos1 leftmost
 			if (i == 0) {
-				p1 = getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1 + 1, arr[1]));
-			} else if (i == 1) {
-				p1 = getBetween(inputString, targetPart.substring(arr[i - 1] + 1, pos1),
-						targetPart.substring(pos1 + 1, arr[2]));
-			} else if (i == 2) {
-				p1 = getBetween(inputString, targetPart.substring(arr[i - 1] + 1, pos1),
-						targetPart.substring(pos1 + 1));
+				p1 = getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1 + D_1.length(), arr[i+1]));
+			}
+			// pos1 middle
+			else if (i == 1) {
+				p1 = getBetween(inputString, targetPart.substring(arr[i - 1] + D_1.length(), pos1),
+						targetPart.substring(pos1 + D_1.length(), arr[i+1]));
+			}
+			// pos1 rigthmost
+			else if (i == 2) {
+				int offset = D_0.length();
+				if (pos0 < pos2) {
+					offset = D_2.length();
+				}
+				p1 = getBetween(inputString, targetPart.substring(arr[i - 1] + offset, pos1),
+						targetPart.substring(pos1 + D_1.length()));
 			}
 			i = 0;
 			for (int j = 0; j < arr.length; j++) {
 				if (arr[j] == pos2)
 					i = j;
 			}
+			// pos2 leftmost
 			if (i == 0) {
-				p2 = getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2 + 1, arr[1]));
-			} else if (i == 1) {
-				p2 = getBetween(inputString, targetPart.substring(arr[i - 1] + 1, pos2),
-						targetPart.substring(pos2 + 1, arr[2]));
-			} else if (i == 2) {
-				p2 = getBetween(inputString, targetPart.substring(arr[i - 1] + 1, pos2),
-						targetPart.substring(pos2 + 1));
+				p2 = getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2 + D_2.length(), arr[i+1]));
+			} 
+			// pos2 middle
+			else if (i == 1) {
+				p2 = getBetween(inputString, targetPart.substring(arr[i - 1] + D_2.length(), pos2),
+						targetPart.substring(pos2 + D_2.length(), arr[i+1]));
 			}
-			i = 0;
-			for (int j = 0; j < arr.length; j++) {
-				if (arr[j] == pos3)
-					i = j;
+			// pos2 rigthmost
+			else if (i == 2) {
+				int offset = D_0.length();
+				if (pos0 < pos1) {
+					offset = D_1.length();
+				}
+				p2 = getBetween(inputString, targetPart.substring(arr[i - 1] + offset, pos2),
+						targetPart.substring(pos2 + D_2.length()));
 			}
-			if (i == 0) {
-				p3 = getBetween(inputString, targetPart.substring(0, pos3), targetPart.substring(pos3 + 1, arr[1]));
-			} else if (i == 1) {
-				p3 = getBetween(inputString, targetPart.substring(arr[i - 1] + 1, pos3),
-						targetPart.substring(pos3 + 1, arr[2]));
-			} else if (i == 2) {
-				p3 = getBetween(inputString, targetPart.substring(arr[i - 1] + 1, pos3),
-						targetPart.substring(pos3 + 1));
-			}
-		} else if (pos1 != -1 && pos2 != -1) {
-			if (pos1 < pos2) {
-				p1 = getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1 + 1, pos2));
-				p2 = getBetween(inputString, targetPart.substring(pos1 + 1, pos2), targetPart.substring(pos2 + 1));
-			} else {
-				p2 = getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2 + 1, pos1));
-				p1 = getBetween(inputString, targetPart.substring(pos2 + 1, pos1), targetPart.substring(pos1 + 1));
-			}
-		} else if (pos1 != -1 && pos3 != -1) {
-			if (pos1 < pos2) {
-				p1 = getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1 + 1, pos3));
-				p3 = getBetween(inputString, targetPart.substring(pos1 + 1, pos3), targetPart.substring(pos3 + 1));
-			} else {
-				p3 = getBetween(inputString, targetPart.substring(0, pos3), targetPart.substring(pos3 + 1, pos1));
-				p1 = getBetween(inputString, targetPart.substring(pos3 + 1, pos1), targetPart.substring(pos1 + 1));
-			}
-		} else if (pos3 != -1 && pos2 != -1) {
-			if (pos1 < pos2) {
-				p3 = getBetween(inputString, targetPart.substring(0, pos3), targetPart.substring(pos3 + 1, pos2));
-				p2 = getBetween(inputString, targetPart.substring(pos3 + 1, pos2), targetPart.substring(pos2 + 1));
-			} else {
-				p2 = getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2 + 1, pos3));
-				p3 = getBetween(inputString, targetPart.substring(pos2 + 1, pos3), targetPart.substring(pos3 + 1));
-			}
-		} else if (pos1 != -1) {
-			p1 = getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1 + 1));
-		} else if (pos2 != -1) {
-			p2 = getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2 + 1));
-		} else if (pos3 != -1) {
-			p3 = getBetween(inputString, targetPart.substring(0, pos3), targetPart.substring(pos3 + 1));
 		}
-		if (replacementPart.contains(D_0) && targetPart.contains(D_0)) {
-			replacementPart = replacementPart.substring(0, replacementPart.indexOf(D_0)) + p1
-					+ replacementPart.substring(replacementPart.indexOf(D_0) + 1);
-			targetPart = targetPart.substring(0, targetPart.indexOf(D_0)) + p1
-					+ targetPart.substring(targetPart.indexOf(D_0) + 1);
+		if(!b0) {
+			targetPart = targetPart.replace(D_0, "");
 		}
-		if (replacementPart.contains(D_1) && targetPart.contains(D_1)) {
-			replacementPart = replacementPart.substring(0, replacementPart.indexOf(D_1)) + p2
-					+ replacementPart.substring(replacementPart.indexOf(D_1) + 1);
-			targetPart = targetPart.substring(0, targetPart.indexOf(D_1)) + p2
-					+ targetPart.substring(targetPart.indexOf(D_1) + 1);
+		if(!b1) {
+			targetPart = targetPart.replace(D_1, "");
 		}
-		if (replacementPart.contains(D_2) && targetPart.contains(D_2)) {
-			replacementPart = replacementPart.substring(0, replacementPart.indexOf(D_2)) + p3
-					+ replacementPart.substring(replacementPart.indexOf(D_2) + 1);
-			targetPart = targetPart.substring(0, targetPart.indexOf(D_2)) + p3
-					+ targetPart.substring(targetPart.indexOf(D_2) + 1);
+		if(!b2) {
+			targetPart = targetPart.replace(D_2, "");
 		}
-		while (targetPart.contains(D_0)) {
-			targetPart = targetPart.replace(D_0, p1);
+		while (b0&&targetPart.contains(D_0)) {
+			targetPart = targetPart.replace(D_0, p0);
 		}
-		while (targetPart.contains(D_1)) {
-			targetPart = targetPart.replace(D_1, p2);
+		while (b1&&targetPart.contains(D_1)) {
+			targetPart = targetPart.replace(D_1, p1);
 		}
-		while (targetPart.contains(D_2)) {
-			targetPart = targetPart.replace(D_2, p3);
+		while (b2&&targetPart.contains(D_2)) {
+			targetPart = targetPart.replace(D_2, p2);
 		}
-		while (replacementPart.contains(D_0)) {
-			replacementPart = replacementPart.replace(D_0, p1);
+		while (b0&&replacementPart.contains(D_0)) {
+			replacementPart = replacementPart.replace(D_0, p0);
 		}
-		while (replacementPart.contains(D_1)) {
-			replacementPart = replacementPart.replace(D_1, p2);
+		while (b1&&replacementPart.contains(D_1)) {
+			replacementPart = replacementPart.replace(D_1, p1);
 		}
-		while (replacementPart.contains(D_2)) {
-			replacementPart = replacementPart.replace(D_2, p3);
+		while (b2&&replacementPart.contains(D_2)) {
+			replacementPart = replacementPart.replace(D_2, p2);
 		}
-
-		return replaceS(inputString, targetPart, replacementPart);
+		return inputString.replace(targetPart, replacementPart);
 	}
 
 	public static void addToDelConfig(String s) {
@@ -381,8 +374,10 @@ public class converter {
 				fileHelpConfigRep.close();
 				fileHelpConfigRep = new fileHelper(configRep0);
 				fileHelpConfigRep.replaceDs(D_1, ss);
+				fileHelpConfigRep.close();
 				fileHelpConfigRep = new fileHelper(configRep1);
 				fileHelpConfigRep.replaceDs(D_1, ss);
+				fileHelpConfigRep.close();
 				fileHelpConfigRep = new fileHelper(configRep2);
 				fileHelpConfigRep.replaceDs(D_1, ss);
 				D_1 = ss;
@@ -391,8 +386,10 @@ public class converter {
 				fileHelpConfigRep.close();
 				fileHelpConfigRep = new fileHelper(configRep0);
 				fileHelpConfigRep.replaceDs(D_2, sss);
+				fileHelpConfigRep.close();
 				fileHelpConfigRep = new fileHelper(configRep1);
 				fileHelpConfigRep.replaceDs(D_2, sss);
+				fileHelpConfigRep.close();
 				fileHelpConfigRep = new fileHelper(configRep2);
 				fileHelpConfigRep.replaceDs(D_2, sss);
 				D_2 = sss;

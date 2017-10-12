@@ -94,7 +94,7 @@ public class gui {
 	btnTest.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent arg0) {
 			progressBar.setValue(0);
-			newConverter.converter.btnTest();
+			newConverter.converter.btnConvert();
 			progressBar.setValue(progressBar.getMaximum());
 		}
 	});

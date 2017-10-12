@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.security.InvalidParameterException;
@@ -16,11 +17,11 @@ public class fileHelper {
 	private File f;
 
 	public fileHelper(String path) throws IOException {
-		f = new File(path);
-		if (!f.exists()) {
-			f.createNewFile();
+		this.f = new File(path);
+		if (!this.f.exists()) {
+			this.f.createNewFile();
 		}
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+		this.open();
 	}
 
 	public fileHelper(File f) throws IOException {
@@ -28,13 +29,13 @@ public class fileHelper {
 		if (!f.exists()) {
 			f.createNewFile();
 		}
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+		this.open();
 	}
 
 	public String getNextLine() {
 		String s = null;
 		try {
-			s = br.readLine();
+			s = this.br.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -67,24 +68,20 @@ public class fileHelper {
 	}
 
 	public void resetReader() throws FileNotFoundException {
-		try {
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		br = new BufferedReader(new FileReader(f));
+		this.close();
+		this.open();
 	}
 
 	public void emtyFile() throws IOException {
-		br.close();
-		f.delete();
-		f.createNewFile();
-		br = new BufferedReader(new FileReader(f));
+		this.close();
+		this.f.delete();
+		this.f.createNewFile();
+		this.open();
 	}
 
 	public boolean appendToFile(String s) {
 		try {
-			Files.write(f.toPath(), s.getBytes(), StandardOpenOption.APPEND);
+			Files.write(this.f.toPath(), s.getBytes(), StandardOpenOption.APPEND);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -113,12 +110,22 @@ public class fileHelper {
 	}
 
 	public void close() {
-		if (br != null) {
+		if (this.br != null) {
 			try {
-				br.close();
+				this.br.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	public void open() {
+		close();
+		try {
+			this.br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 	}
 }
