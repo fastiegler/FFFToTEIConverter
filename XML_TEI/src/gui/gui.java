@@ -10,11 +10,13 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 
 import javax.swing.JTextField;
+
+import newConverter.converterThread;
+
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import java.awt.Color;
-
 
 public class gui {
 	private JFrame frmKonvertierer;
@@ -22,89 +24,128 @@ public class gui {
 	addToRepGUI addRepGUI;
 	setDsGUI setDGUI;
 	JProgressBar progressBar;
-	public gui(){
-	frmKonvertierer = new JFrame("converter");
-	frmKonvertierer.setTitle("Konvertierer");
-        frmKonvertierer.setSize(800,700);
-	frmKonvertierer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	frmKonvertierer.getContentPane().setLayout(new BorderLayout(0, 0));
-	
-	JPanel panel_1 = new JPanel();
-	frmKonvertierer.getContentPane().add(panel_1, BorderLayout.CENTER);
-	progressBar = new JProgressBar();
-	JButton btnAddtodel = new JButton("Zu l\u00F6schenden Ausdruck hinzuf\u00FCgen");
-	btnAddtodel.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			progressBar.setValue(0);
-			frmKonvertierer.setEnabled(false);
-			//open dialog
-			if (addDelGUI==null) {
-				addDelGUI=new addToDelGUI();
-			}else {
-				addDelGUI.frmZuLschendenAusdruck.setVisible(true);
+	JButton btnTest;
+	JButton btnAddtorep;
+	JButton btnAddtodel;
+	JButton btnChangeds;
+
+	public gui() {
+		frmKonvertierer = new JFrame("converter");
+		frmKonvertierer.setTitle("Konvertierer");
+		frmKonvertierer.setSize(800, 700);
+		frmKonvertierer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmKonvertierer.getContentPane().setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_1 = new JPanel();
+		frmKonvertierer.getContentPane().add(panel_1, BorderLayout.CENTER);
+		progressBar = new JProgressBar();
+		btnAddtodel = new JButton("Zu l\u00F6schenden Ausdruck hinzuf\u00FCgen");
+		btnAddtodel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				progressBar.setValue(0);
+				frmKonvertierer.setEnabled(false);
+				// open dialog
+				if (addDelGUI == null) {
+					addDelGUI = new addToDelGUI();
+				} else {
+					addDelGUI.frmZuLschendenAusdruck.setVisible(true);
+				}
 			}
-		}
-	});
-	panel_1.add(btnAddtodel);
-	
-	JButton btnAddtorep = new JButton("Zu ersetzenden Ausdruck hinzuf\u00FCgen");
-	btnAddtorep.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			progressBar.setValue(0);
-			frmKonvertierer.setEnabled(false);
-			//open dialog
-			if (addRepGUI==null) {
-				addRepGUI=new addToRepGUI();
-			}else {
-				addRepGUI.frmZuErsetzendenAusdruck.setVisible(true);
+		});
+		panel_1.add(btnAddtodel);
+
+		btnAddtorep = new JButton("Zu ersetzenden Ausdruck hinzuf\u00FCgen");
+		btnAddtorep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				progressBar.setValue(0);
+				frmKonvertierer.setEnabled(false);
+				// open dialog
+				if (addRepGUI == null) {
+					addRepGUI = new addToRepGUI();
+				} else {
+					addRepGUI.frmZuErsetzendenAusdruck.setVisible(true);
+				}
 			}
-		}
-	});
-	panel_1.add(btnAddtorep);
-	
-	JButton btnChangeds = new JButton("Variablen setzen");
-	btnChangeds.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			progressBar.setValue(0);
-			frmKonvertierer.setEnabled(false);
-			//open dialog
-			if (setDGUI==null) {
-				setDGUI=new setDsGUI();
-			}else {
-				setDGUI.frame.setVisible(true);
+		});
+		panel_1.add(btnAddtorep);
+
+		btnChangeds = new JButton("Variablen setzen");
+		btnChangeds.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				progressBar.setValue(0);
+				frmKonvertierer.setEnabled(false);
+				// open dialog
+				if (setDGUI == null) {
+					setDGUI = new setDsGUI();
+				} else {
+					setDGUI.frame.setVisible(true);
+				}
 			}
-		}
-	});
-	panel_1.add(btnChangeds);
-	
-	JButton btnTest = new JButton("Konvertieren");
-	panel_1.add(btnTest);
-	
-	
-	progressBar.setForeground(Color.GREEN);
-	frmKonvertierer.getContentPane().add(progressBar, BorderLayout.SOUTH);
-	
-	JPanel panel = new JPanel();
-	DropPane drop =new DropPane();
-	panel.add(drop);
-	drop.setSize(50, 50);
-	drop.setBackground(Color.GRAY);
-	drop.setToolTipText("Ziehe .FFF Datei und .xml Datei(optional) in dieses Feld");
-	frmKonvertierer.getContentPane().add(panel, BorderLayout.NORTH);
-	btnTest.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent arg0) {
-			progressBar.setValue(0);
-			newConverter.converter.btnConvert();
-			progressBar.setValue(progressBar.getMaximum());
-		}
-	});
-	frmKonvertierer.setVisible(true);
-	frmKonvertierer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	
+		});
+		panel_1.add(btnChangeds);
+
+		btnTest = new JButton("Konvertieren");
+		panel_1.add(btnTest);
+
+		progressBar.setForeground(Color.GREEN);
+		frmKonvertierer.getContentPane().add(progressBar, BorderLayout.SOUTH);
+
+		JPanel panel = new JPanel();
+		DropPane drop = new DropPane();
+		panel.add(drop);
+		drop.setSize(50, 50);
+		drop.setBackground(Color.GRAY);
+		drop.setToolTipText("Ziehe .FFF Datei und .xml Datei(optional) in dieses Feld");
+		frmKonvertierer.getContentPane().add(panel, BorderLayout.NORTH);
+		btnTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				progressBarReset();
+				Thread conv = new Thread(new converterThread());
+				conv.start();
+				disableButtons();
+			}
+		});
+		frmKonvertierer.setVisible(true);
+		frmKonvertierer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 	}
+
 	public void enableGUI() {
 		frmKonvertierer.setEnabled(true);
 	}
-	
-	
+
+	public void setProgressBarMaximum(int max) {
+		progressBar.setMaximum(max);
+	}
+
+	public void progressBarDoStep() {
+		progressBar.setValue(progressBar.getValue() + 1);
+		double green = ((double) progressBar.getValue()) / ((double) progressBar.getMaximum()) * 256.0;
+		progressBar.setForeground(new Color(255 - (int) green, (int) green, 0));
+	}
+
+	public void progressBarEnd() {
+		progressBar.setValue(progressBar.getMaximum());
+		progressBar.setForeground(Color.GREEN);
+	}
+
+	public void progressBarReset() {
+		progressBar.setValue(0);
+		progressBar.setForeground(Color.RED);
+	}
+
+	public void enableButtons() {
+		btnTest.setEnabled(true);
+		btnAddtorep.setEnabled(true);
+		btnAddtodel.setEnabled(true);
+		btnChangeds.setEnabled(true);
+	}
+
+	public void disableButtons() {
+		btnTest.setEnabled(false);
+		btnAddtorep.setEnabled(false);
+		btnAddtodel.setEnabled(false);
+		btnChangeds.setEnabled(false);
+	}
+
 }

@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import com.sun.java.swing.plaf.windows.resources.windows;
+
+import gui.gui;
 
 public class converter {
 
@@ -25,7 +30,7 @@ public class converter {
 	private static fileHelper fileHelpConfigRep;
 	private static fileHelper filehelperIn;
 	private static fileHelper filehelperOut;
-	private static gui.gui window;
+	private static gui window;
 	private static File input = new File(System.getProperty("user.dir") + "\\input");
 	private static File output = new File(System.getProperty("user.dir") + "\\xml.out");
 
@@ -35,7 +40,7 @@ public class converter {
 		configRep1 = new File(System.getProperty("user.dir") + "\\R1.cfg");
 		configRep2 = new File(System.getProperty("user.dir") + "\\R2.cfg");
 		reloadConfigs();
-		window = new gui.gui();
+		window = new gui();
 		openFiles();
 	}
 
@@ -58,11 +63,13 @@ public class converter {
 		}
 	}
 
-	public static void btnConvert() {
+	public static void convert() {
+		window.setProgressBarMaximum((int) (input.getTotalSpace()/106000000L));
 		reset();
 		reloadConfigs();
 		replaceEverything();
-		System.out.println("Fertig");
+		window.progressBarEnd();
+		window.enableButtons();
 	}
 
 	private static void reloadConfigs() {
@@ -141,8 +148,12 @@ public class converter {
 		openFiles();
 		String s = "";
 		while ((s = filehelperIn.getNextLines(count))!=null) {
+			for (int i = 0; i < count; i++) {
+				window.progressBarDoStep();
+			}			
 			for (String string : delList) {
-				s = s.replaceAll(string, "");
+				while(s.contains(string)) {
+				s = s.replace(string, "");}
 			}
 			for (int i = 0; i < repList0.size(); i++) {
 				String rep0 = repList0.get(i);
@@ -173,7 +184,7 @@ public class converter {
 		if (!leftString.equals(""))
 		ret=ret.substring(ret.indexOf(leftString)+leftString.length());
 		if (!rightString.equals(""))
-		ret=ret.substring(0,ret.indexOf(rightString)+rightString.length()-1);
+		ret=ret.substring(0,ret.indexOf(rightString));
 		if (!leftString.equals(""))
 			ret = ret.replace(leftString, "");
 		if (!rightString.equals(""))
@@ -223,8 +234,7 @@ public class converter {
 			}
 			// pos0 leftmost
 			if (i == 0) {
-				p0 = getBetween(inputString, targetPart.substring(0, pos0),
-						targetPart.substring(pos0 + D_0.length(), arr[i + 1]));
+				p0 = getBetween(inputString, targetPart.substring(0, pos0),	targetPart.substring(pos0 + D_0.length(), arr[i + 1]));
 			}
 			// pos0 middle
 			else if (i == 1) {
@@ -326,31 +336,32 @@ public class converter {
 				e.printStackTrace();
 			}
 		}
-		fileHelpConfigDel.appendToFile("\n" + s);
+		fileHelpConfigDel.appendToFile("\r\n" + s);
 	}
 
 	public static void addToRepConfig(String replace, String with) {
 		try {
 			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep0);
-			String tmp = replace;
+			String s="\\Q",e="\\E";
+			String tmp = s+replace+e;
 			while (tmp.contains(D_0)) {
-				tmp = tmp.replace(D_0, ".*");
+				tmp = tmp.replace(D_0, e+".*"+s);
 			}
 			while (tmp.contains(D_1)) {
-				tmp = tmp.replace(D_1, ".*");
+				tmp = tmp.replace(D_1, e+".*"+s);
 			}
 			while (tmp.contains(D_2)) {
-				tmp = tmp.replace(D_2, ".*");
+				tmp = tmp.replace(D_2, e+".*"+s);
 			}
 			tmp = ".*" + tmp + ".*";
-			fileHelpConfigRep.appendToFile("\n" + tmp);
+			fileHelpConfigRep.appendToFile("\r\n" + tmp);
 			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep1);
-			fileHelpConfigRep.appendToFile("\n" + replace);
+			fileHelpConfigRep.appendToFile("\r\n" + replace);
 			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep2);
-			fileHelpConfigRep.appendToFile("\n" + with);
+			fileHelpConfigRep.appendToFile("\r\n" + with);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
