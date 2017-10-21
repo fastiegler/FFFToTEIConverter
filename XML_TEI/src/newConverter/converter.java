@@ -27,6 +27,7 @@ public class converter {
 	private static File configRep0;
 	private static File configRep1;
 	private static File configRep2;
+	private static File configVar;
 	private static fileHelper fileHelpConfigRep;
 	private static fileHelper filehelperIn;
 	private static fileHelper filehelperOut;
@@ -39,6 +40,7 @@ public class converter {
 		configRep0 = new File(System.getProperty("user.dir") + "\\R0.cfg");
 		configRep1 = new File(System.getProperty("user.dir") + "\\R1.cfg");
 		configRep2 = new File(System.getProperty("user.dir") + "\\R2.cfg");
+		configVar = new File(System.getProperty("user.dir") + "\\Var.cfg");
 		reloadConfigs();
 		window = new gui();
 		openFiles();
@@ -79,6 +81,30 @@ public class converter {
 		repList1 = new ArrayList<>();
 		repList2 = new ArrayList<>();
 		loadRepConfig();
+		try {
+			loadVariables();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void loadVariables() throws IOException {
+		String b=null;
+		if(!configVar.exists()) {
+			b="[\r\n]\r\n}";
+		}
+		fileHelper helper=new fileHelper(configVar);
+		if (b!=null) {
+			helper.appendToFile(b);
+		}
+		String s="";
+		s=helper.getNextLine();
+		D_0=s;
+		s=helper.getNextLine();
+		D_1=s;
+		s=helper.getNextLine();
+		D_2=s;
+		helper.close();
 	}
 
 	public static void reset() {
@@ -369,6 +395,33 @@ public class converter {
 
 	public static void replaceDs(String s, String ss, String sss) {
 		try {
+			fileHelper helper=new fileHelper(configVar);
+			String ssss="",newVars="";
+			ssss=helper.getNextLine();
+			if (s!=ssss) {
+				newVars+=s;
+			}else {
+				newVars+=ssss;
+			}
+			newVars+="\r\n";
+			ssss=helper.getNextLine();
+			if (ss!=ssss) {
+				newVars+=ss;
+			}else {
+				newVars+=ssss;
+			}
+			newVars+="\r\n";
+			ssss=helper.getNextLine();
+			if (sss!=ssss) {
+				newVars+=sss;
+			}else {
+				newVars+=ssss;
+			}
+			helper.close();
+			helper.emtyFile();
+			helper.open();
+			helper.appendToFile(newVars);
+			helper.close();
 			if (!s.equals(D_0)) {
 				fileHelpConfigRep.close();
 				fileHelpConfigRep = new fileHelper(configRep0);

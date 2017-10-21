@@ -80,12 +80,15 @@ public class fileHelper {
 	}
 
 	public boolean appendToFile(String s) {
+		this.close();
 		try {
 			Files.write(this.f.toPath(), s.getBytes(), StandardOpenOption.APPEND);
+			this.open();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.open();
 		return false;
 	}
 
