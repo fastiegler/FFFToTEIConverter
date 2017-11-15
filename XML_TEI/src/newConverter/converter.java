@@ -34,6 +34,7 @@ public class converter {
 	private static gui window;
 	private static File input = new File(System.getProperty("user.dir") + "\\input");
 	private static File output = new File(System.getProperty("user.dir") + "\\xml.out");
+	private static int countDeletions,countReplacements;
 
 	public static void main(String[] args) {
 		configDel = new File(System.getProperty("user.dir") + "\\D.cfg");
@@ -70,8 +71,7 @@ public class converter {
 		reset();
 		reloadConfigs();
 		replaceEverything();
-		window.progressBarEnd();
-		window.enableButtons();
+		window.endConvertion(countDeletions,countReplacements);
 	}
 
 	private static void reloadConfigs() {
@@ -108,6 +108,8 @@ public class converter {
 	}
 
 	public static void reset() {
+		countDeletions=0;
+		countReplacements=0;
 		try {
 			filehelperIn.resetReader();
 			filehelperOut.emtyFile();
@@ -179,7 +181,9 @@ public class converter {
 			}			
 			for (String string : delList) {
 				while(s.contains(string)) {
-				s = s.replace(string, "");}
+				s = s.replace(string, "");
+				countDeletions++;
+				}
 			}
 			for (int i = 0; i < repList0.size(); i++) {
 				String rep0 = repList0.get(i);
@@ -187,6 +191,7 @@ public class converter {
 				String rep2 = repList2.get(i);
 				while (s.matches(rep0)) {
 					s = refactorString(s, rep1, rep2);
+					countReplacements++;
 				}
 			}
 			if (!s.equals("")) {

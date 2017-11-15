@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
@@ -8,12 +10,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 import java.awt.FlowLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class addToDelGUI {
 	JFrame frmZuLschendenAusdruck;
 	private JTextField textReplace;
 	private JPanel panel;
 	private JButton btnCancel;
+	private JScrollPane scrollPane;
+	private JTable table;
+	private JPanel panel_1;
 
 	public addToDelGUI() {
 		frmZuLschendenAusdruck = new JFrame("");
@@ -40,6 +47,16 @@ public class addToDelGUI {
 			}
 		});
 		panel.add(btnCancel);
+		
+		panel_1 = new JPanel();
+		frmZuLschendenAusdruck.getContentPane().add(panel_1, BorderLayout.EAST);
+		Object[][] data ={{"data1","data2"}};
+		String[] columnNames = {"col1","col2"};
+		table = new JTable( data,columnNames );
+		panel_1.add(table);
+		
+		scrollPane = new JScrollPane();
+		panel_1.add(scrollPane);
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				newConverter.converter.addToDelConfig(textReplace.getText());

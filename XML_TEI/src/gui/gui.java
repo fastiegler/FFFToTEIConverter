@@ -28,6 +28,8 @@ public class gui {
 	JButton btnAddtorep;
 	JButton btnAddtodel;
 	JButton btnChangeds;
+	private JLabel lblLblreplacedcount;
+	private JLabel lblLbldeletedcount;
 
 	public gui() {
 		frmKonvertierer = new JFrame("converter");
@@ -86,6 +88,12 @@ public class gui {
 
 		btnTest = new JButton("Konvertieren");
 		panel_1.add(btnTest);
+		
+		lblLblreplacedcount = new JLabel("Anzahl ausgetauschter Abschnitte: ");
+		panel_1.add(lblLblreplacedcount);
+		
+		lblLbldeletedcount = new JLabel("Anzahl gel\u00F6schter Abschnitte: ");
+		panel_1.add(lblLbldeletedcount);
 
 		progressBar.setForeground(Color.GREEN);
 		frmKonvertierer.getContentPane().add(progressBar, BorderLayout.SOUTH);
@@ -146,6 +154,13 @@ public class gui {
 		btnAddtorep.setEnabled(false);
 		btnAddtodel.setEnabled(false);
 		btnChangeds.setEnabled(false);
+	}
+
+	public void endConvertion(int countDeletions, int countReplacements) {
+		this.progressBarEnd();
+		this.lblLbldeletedcount.setText(this.lblLbldeletedcount.getText().split(": ")[0]+": "+countDeletions);
+		this.lblLblreplacedcount.setText(this.lblLblreplacedcount.getText().split(": ")[0]+": "+countReplacements);
+		this.enableButtons();
 	}
 
 }
