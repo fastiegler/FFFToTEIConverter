@@ -485,4 +485,47 @@ public class converter {
 		return s;
 	}
 
+	public static Object[][] getData(String string) {
+		String actline = null;
+		fileHelper fh = null;
+		ArrayList<Object> ar=new ArrayList<>();
+		switch(string) {
+		case "DEL":
+			try {
+				fh=new fileHelper(configDel);
+				actline=fh.getNextLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			break;
+		default:
+		}
+		while(actline!=null) {
+			ar.add(actline);
+			actline=fh.getNextLine();
+		}
+		if(fh!=null) {
+			fh.close();
+		}
+		Object[][] ret=new Object[ar.size()][2];
+		for (int i = 0; i < ar.size(); i++) {
+			ret[i][0]=i+1;
+			ret[i][1]=ar.get(i);
+		}
+		return ret;
+	}
+
+	public static String[] getColumnames(String string) {
+		String[] ret = null;
+		switch(string) {
+		case "DEL":
+			ret= new String[2] ;
+			ret[0]="nummer";
+			ret[1]="test";
+			break;
+		default:
+		}
+		return ret;
+	}
+
 }

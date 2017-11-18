@@ -18,11 +18,10 @@ public class addToDelGUI {
 	private JTextField textReplace;
 	private JPanel panel;
 	private JButton btnCancel;
-	private JScrollPane scrollPane;
 	private JTable table;
 	private JPanel panel_1;
 
-	public addToDelGUI() {
+	public addToDelGUI(Object[][] data,String[] columnNames) {
 		frmZuLschendenAusdruck = new JFrame("");
 		frmZuLschendenAusdruck.setTitle("Zu l\u00F6schenden Ausdruck hinzuf\u00FCgen");
 		frmZuLschendenAusdruck.setSize(800, 700);
@@ -30,7 +29,7 @@ public class addToDelGUI {
 		frmZuLschendenAusdruck.getContentPane().setLayout(new BorderLayout(0, 0));
 		textReplace = new JTextField();
 		textReplace.setToolTipText("Zu ersetzender Ausdruck\r\nz.B: \"<EL>\"");
-		frmZuLschendenAusdruck.getContentPane().add(textReplace, BorderLayout.CENTER);
+		frmZuLschendenAusdruck.getContentPane().add(textReplace, BorderLayout.NORTH);
 		textReplace.setColumns(10);
 		
 		panel = new JPanel();
@@ -49,14 +48,9 @@ public class addToDelGUI {
 		panel.add(btnCancel);
 		
 		panel_1 = new JPanel();
-		frmZuLschendenAusdruck.getContentPane().add(panel_1, BorderLayout.EAST);
-		Object[][] data ={{"data1","data2"}};
-		String[] columnNames = {"col1","col2"};
+		frmZuLschendenAusdruck.getContentPane().add(panel_1, BorderLayout.CENTER);
 		table = new JTable( data,columnNames );
-		panel_1.add(table);
-		
-		scrollPane = new JScrollPane();
-		panel_1.add(scrollPane);
+		panel_1.add(new JScrollPane(table));
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				newConverter.converter.addToDelConfig(textReplace.getText());
@@ -70,4 +64,5 @@ public class addToDelGUI {
 		frmZuLschendenAusdruck.setVisible(false);
 		textReplace.setText("");
 	}
+
 }

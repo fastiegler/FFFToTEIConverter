@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 
 import javax.swing.JTextField;
 
+import newConverter.converter;
 import newConverter.converterThread;
 
 import java.awt.FlowLayout;
@@ -47,11 +48,7 @@ public class gui {
 				progressBar.setValue(0);
 				frmKonvertierer.setEnabled(false);
 				// open dialog
-				if (addDelGUI == null) {
-					addDelGUI = new addToDelGUI();
-				} else {
-					addDelGUI.frmZuLschendenAusdruck.setVisible(true);
-				}
+					addDelGUI = new addToDelGUI(converter.getData("DEL"), converter.getColumnames("DEL"));
 			}
 		});
 		panel_1.add(btnAddtodel);
