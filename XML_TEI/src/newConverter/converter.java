@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 import java.util.regex.Pattern;
 
 import com.sun.java.swing.plaf.windows.resources.windows;
@@ -34,7 +35,7 @@ public class converter {
 	private static gui window;
 	private static File input = new File(System.getProperty("user.dir") + "\\input");
 	private static File output = new File(System.getProperty("user.dir") + "\\xml.out");
-	private static int countDeletions,countReplacements;
+	private static int countDeletions, countReplacements;
 
 	public static void main(String[] args) {
 		configDel = new File(System.getProperty("user.dir") + "\\D.cfg");
@@ -67,11 +68,11 @@ public class converter {
 	}
 
 	public static void convert() {
-		window.setProgressBarMaximum((int) (input.getTotalSpace()/106000000L));
+		window.setProgressBarMaximum((int) (input.getTotalSpace() / 106000000L));
 		reset();
 		reloadConfigs();
 		replaceEverything();
-		window.endConvertion(countDeletions,countReplacements);
+		window.endConvertion(countDeletions, countReplacements);
 	}
 
 	private static void reloadConfigs() {
@@ -89,27 +90,27 @@ public class converter {
 	}
 
 	private static void loadVariables() throws IOException {
-		String b=null;
-		if(!configVar.exists()) {
-			b="[\r\n]\r\n}";
+		String b = null;
+		if (!configVar.exists()) {
+			b = "[\r\n]\r\n}";
 		}
-		fileHelper helper=new fileHelper(configVar);
-		if (b!=null) {
+		fileHelper helper = new fileHelper(configVar);
+		if (b != null) {
 			helper.appendToFile(b);
 		}
-		String s="";
-		s=helper.getNextLine();
-		D_0=s;
-		s=helper.getNextLine();
-		D_1=s;
-		s=helper.getNextLine();
-		D_2=s;
+		String s = "";
+		s = helper.getNextLine();
+		D_0 = s;
+		s = helper.getNextLine();
+		D_1 = s;
+		s = helper.getNextLine();
+		D_2 = s;
 		helper.close();
 	}
 
 	public static void reset() {
-		countDeletions=0;
-		countReplacements=0;
+		countDeletions = 0;
+		countReplacements = 0;
 		try {
 			filehelperIn.resetReader();
 			filehelperOut.emtyFile();
@@ -175,14 +176,14 @@ public class converter {
 	private static void replaceEverything() {
 		openFiles();
 		String s = "";
-		while ((s = filehelperIn.getNextLines(count))!=null) {
+		while ((s = filehelperIn.getNextLines(count)) != null) {
 			for (int i = 0; i < count; i++) {
 				window.progressBarDoStep();
-			}			
+			}
 			for (String string : delList) {
-				while(s.contains(string)) {
-				s = s.replace(string, "");
-				countDeletions++;
+				while (s.contains(string)) {
+					s = s.replace(string, "");
+					countDeletions++;
 				}
 			}
 			for (int i = 0; i < repList0.size(); i++) {
@@ -203,7 +204,7 @@ public class converter {
 
 	// returns string in @input between @leftString and @rightString
 	private static String getBetween(String input, String leftString, String rightString) {
-		if (leftString.equals("")&&rightString.equals("")) {
+		if (leftString.equals("") && rightString.equals("")) {
 			return "";
 		}
 		if (!(input.contains(leftString) && input.contains(rightString))) {
@@ -213,9 +214,9 @@ public class converter {
 		}
 		String ret = input;
 		if (!leftString.equals(""))
-		ret=ret.substring(ret.indexOf(leftString)+leftString.length());
+			ret = ret.substring(ret.indexOf(leftString) + leftString.length());
 		if (!rightString.equals(""))
-		ret=ret.substring(0,ret.indexOf(rightString));
+			ret = ret.substring(0, ret.indexOf(rightString));
 		if (!leftString.equals(""))
 			ret = ret.replace(leftString, "");
 		if (!rightString.equals(""))
@@ -227,29 +228,26 @@ public class converter {
 	private static String refactorString(String inputString, String targetPart, String replacementPart) {
 		int pos0 = -1, pos1 = -1, pos2 = -1;
 		String p0 = "", p1 = "", p2 = "";
-		boolean b0=false,b1=false,b2=false;
+		boolean b0 = false, b1 = false, b2 = false;
 		if (targetPart.contains(D_0)) {
 			pos0 = targetPart.indexOf(D_0);
-			b0=true;
-		}
-		else {
-			targetPart=targetPart+D_0;
+			b0 = true;
+		} else {
+			targetPart = targetPart + D_0;
 			pos0 = targetPart.indexOf(D_0);
 		}
 		if (targetPart.contains(D_1)) {
 			pos1 = targetPart.indexOf(D_1);
-			b1=true;
-		}
-		else {
-			targetPart=targetPart+D_1;
+			b1 = true;
+		} else {
+			targetPart = targetPart + D_1;
 			pos1 = targetPart.indexOf(D_1);
 		}
 		if (targetPart.contains(D_2)) {
 			pos2 = targetPart.indexOf(D_2);
-			b2=true;
-		}
-		else {
-			targetPart=targetPart+D_2;
+			b2 = true;
+		} else {
+			targetPart = targetPart + D_2;
 			pos2 = targetPart.indexOf(D_2);
 		}
 		int[] arr = { pos0, pos1, pos2 };
@@ -265,7 +263,8 @@ public class converter {
 			}
 			// pos0 leftmost
 			if (i == 0) {
-				p0 = getBetween(inputString, targetPart.substring(0, pos0),	targetPart.substring(pos0 + D_0.length(), arr[i + 1]));
+				p0 = getBetween(inputString, targetPart.substring(0, pos0),
+						targetPart.substring(pos0 + D_0.length(), arr[i + 1]));
 			}
 			// pos0 middle
 			else if (i == 1) {
@@ -288,12 +287,13 @@ public class converter {
 			}
 			// pos1 leftmost
 			if (i == 0) {
-				p1 = getBetween(inputString, targetPart.substring(0, pos1), targetPart.substring(pos1 + D_1.length(), arr[i+1]));
+				p1 = getBetween(inputString, targetPart.substring(0, pos1),
+						targetPart.substring(pos1 + D_1.length(), arr[i + 1]));
 			}
 			// pos1 middle
 			else if (i == 1) {
 				p1 = getBetween(inputString, targetPart.substring(arr[i - 1] + D_1.length(), pos1),
-						targetPart.substring(pos1 + D_1.length(), arr[i+1]));
+						targetPart.substring(pos1 + D_1.length(), arr[i + 1]));
 			}
 			// pos1 rigthmost
 			else if (i == 2) {
@@ -311,12 +311,13 @@ public class converter {
 			}
 			// pos2 leftmost
 			if (i == 0) {
-				p2 = getBetween(inputString, targetPart.substring(0, pos2), targetPart.substring(pos2 + D_2.length(), arr[i+1]));
-			} 
+				p2 = getBetween(inputString, targetPart.substring(0, pos2),
+						targetPart.substring(pos2 + D_2.length(), arr[i + 1]));
+			}
 			// pos2 middle
 			else if (i == 1) {
 				p2 = getBetween(inputString, targetPart.substring(arr[i - 1] + D_2.length(), pos2),
-						targetPart.substring(pos2 + D_2.length(), arr[i+1]));
+						targetPart.substring(pos2 + D_2.length(), arr[i + 1]));
 			}
 			// pos2 rigthmost
 			else if (i == 2) {
@@ -328,31 +329,31 @@ public class converter {
 						targetPart.substring(pos2 + D_2.length()));
 			}
 		}
-		if(!b0) {
+		if (!b0) {
 			targetPart = targetPart.replace(D_0, "");
 		}
-		if(!b1) {
+		if (!b1) {
 			targetPart = targetPart.replace(D_1, "");
 		}
-		if(!b2) {
+		if (!b2) {
 			targetPart = targetPart.replace(D_2, "");
 		}
-		while (b0&&targetPart.contains(D_0)) {
+		while (b0 && targetPart.contains(D_0)) {
 			targetPart = targetPart.replace(D_0, p0);
 		}
-		while (b1&&targetPart.contains(D_1)) {
+		while (b1 && targetPart.contains(D_1)) {
 			targetPart = targetPart.replace(D_1, p1);
 		}
-		while (b2&&targetPart.contains(D_2)) {
+		while (b2 && targetPart.contains(D_2)) {
 			targetPart = targetPart.replace(D_2, p2);
 		}
-		while (b0&&replacementPart.contains(D_0)) {
+		while (b0 && replacementPart.contains(D_0)) {
 			replacementPart = replacementPart.replace(D_0, p0);
 		}
-		while (b1&&replacementPart.contains(D_1)) {
+		while (b1 && replacementPart.contains(D_1)) {
 			replacementPart = replacementPart.replace(D_1, p1);
 		}
-		while (b2&&replacementPart.contains(D_2)) {
+		while (b2 && replacementPart.contains(D_2)) {
 			replacementPart = replacementPart.replace(D_2, p2);
 		}
 		return inputString.replace(targetPart, replacementPart);
@@ -374,25 +375,25 @@ public class converter {
 		try {
 			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep0);
-			String s="\\Q",e="\\E";
-			String tmp = s+replace+e;
+			String s = "\\Q", e = "\\E";
+			String tmp = s + replace + e;
 			while (tmp.contains(D_0)) {
-				tmp = tmp.replace(D_0, e+".*"+s);
+				tmp = tmp.replace(D_0, e + ".*" + s);
 			}
 			while (tmp.contains(D_1)) {
-				tmp = tmp.replace(D_1, e+".*"+s);
+				tmp = tmp.replace(D_1, e + ".*" + s);
 			}
 			while (tmp.contains(D_2)) {
-				tmp = tmp.replace(D_2, e+".*"+s);
+				tmp = tmp.replace(D_2, e + ".*" + s);
 			}
 			tmp = ".*" + tmp + ".*";
-			fileHelpConfigRep.appendToFile("\r\n" + tmp);
+			fileHelpConfigRep.appendToFile(tmp+"\r\n");
 			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep1);
-			fileHelpConfigRep.appendToFile("\r\n" + replace);
+			fileHelpConfigRep.appendToFile(replace+"\r\n");
 			fileHelpConfigRep.close();
 			fileHelpConfigRep = new fileHelper(configRep2);
-			fileHelpConfigRep.appendToFile("\r\n" + with);
+			fileHelpConfigRep.appendToFile( with+"\r\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -400,27 +401,27 @@ public class converter {
 
 	public static void replaceDs(String s, String ss, String sss) {
 		try {
-			fileHelper helper=new fileHelper(configVar);
-			String ssss="",newVars="";
-			ssss=helper.getNextLine();
-			if (s!=ssss) {
-				newVars+=s;
-			}else {
-				newVars+=ssss;
+			fileHelper helper = new fileHelper(configVar);
+			String ssss = "", newVars = "";
+			ssss = helper.getNextLine();
+			if (s != ssss) {
+				newVars += s;
+			} else {
+				newVars += ssss;
 			}
-			newVars+="\r\n";
-			ssss=helper.getNextLine();
-			if (ss!=ssss) {
-				newVars+=ss;
-			}else {
-				newVars+=ssss;
+			newVars += "\r\n";
+			ssss = helper.getNextLine();
+			if (ss != ssss) {
+				newVars += ss;
+			} else {
+				newVars += ssss;
 			}
-			newVars+="\r\n";
-			ssss=helper.getNextLine();
-			if (sss!=ssss) {
-				newVars+=sss;
-			}else {
-				newVars+=ssss;
+			newVars += "\r\n";
+			ssss = helper.getNextLine();
+			if (sss != ssss) {
+				newVars += sss;
+			} else {
+				newVars += ssss;
 			}
 			helper.close();
 			helper.emtyFile();
@@ -488,44 +489,143 @@ public class converter {
 	public static Object[][] getData(String string) {
 		String actline = null;
 		fileHelper fh = null;
-		ArrayList<Object> ar=new ArrayList<>();
-		switch(string) {
+		ArrayList<Object> ar = new ArrayList<>();
+		Object[][] ret = null;
+		switch (string) {
 		case "DEL":
 			try {
-				fh=new fileHelper(configDel);
-				actline=fh.getNextLine();
+				fh = new fileHelper(configDel);
+				actline = fh.getNextLine();
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+			while (actline != null) {
+				ar.add(actline);
+				actline = fh.getNextLine();
+			}
+			if (fh != null) {
+				fh.close();
+			}
+			ret = new Object[ar.size()][2];
+			for (int i = 0; i < ar.size(); i++) {
+				ret[i][0] = i + 1;
+				ret[i][1] = ar.get(i);
+			}
+			break;
+		case "REP":
+			ArrayList<Object> ar2 = new ArrayList<>();
+			try {
+				fh = new fileHelper(configRep1);
+				actline = fh.getNextLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			while (actline != null) {
+				ar.add(actline);
+				actline = fh.getNextLine();
+			}
+			if (fh != null) {
+				fh.close();
+			}
+			try {
+				fh = new fileHelper(configRep2);
+				actline = fh.getNextLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			while (actline != null) {
+				ar2.add(actline);
+				actline = fh.getNextLine();
+			}
+			if (fh != null) {
+				fh.close();
+			}
+			ret = new Object[ar.size()][3];
+			for (int i = 0; i < ar.size(); i++) {
+				ret[i][0] = i + 1;
+				ret[i][1] = ar.get(i);
+				ret[i][2]=ar2.get(i);
 			}
 			break;
 		default:
 		}
-		while(actline!=null) {
-			ar.add(actline);
-			actline=fh.getNextLine();
-		}
-		if(fh!=null) {
-			fh.close();
-		}
-		Object[][] ret=new Object[ar.size()][2];
-		for (int i = 0; i < ar.size(); i++) {
-			ret[i][0]=i+1;
-			ret[i][1]=ar.get(i);
-		}
+
 		return ret;
 	}
 
 	public static String[] getColumnames(String string) {
 		String[] ret = null;
-		switch(string) {
+		switch (string) {
 		case "DEL":
-			ret= new String[2] ;
-			ret[0]="nummer";
-			ret[1]="test";
+			ret = new String[2];
+			ret[0] = "nummer";
+			ret[1] = "test";
+			break;
+		case "REP":
+			ret = new String[3];
+			ret[0] = "nummer";
+			ret[1] = "test1";
+			ret[2] = "test2";
 			break;
 		default:
 		}
 		return ret;
+	}
+
+	public static void addToDelConfig(Vector dataVector) {
+		if (fileHelpConfigDel == null) {
+			try {
+				fileHelpConfigDel = new fileHelper(configDel);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			fileHelpConfigDel.emtyFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < dataVector.size(); i++) {
+			fileHelpConfigDel.appendToFile((String) ((Vector)dataVector.elementAt(i)).elementAt(1)+"\r\n");
+		}
+	}
+	
+	public static void addToRepConfig(Vector dataVector) {
+		if (fileHelpConfigRep == null) {
+			try {
+				fileHelpConfigRep = new fileHelper(configRep0);
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			fileHelpConfigRep.close();
+			try {
+				fileHelpConfigRep = new fileHelper(configRep0);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			fileHelpConfigRep.emtyFile();
+			fileHelpConfigRep.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			fileHelpConfigRep = new fileHelper(configRep1);
+			fileHelpConfigRep.emtyFile();
+			fileHelpConfigRep.close();
+			fileHelpConfigRep = new fileHelper(configRep2);
+			fileHelpConfigRep.emtyFile();
+			fileHelpConfigRep.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < dataVector.size(); i++) {
+			addToRepConfig((String) ((Vector)dataVector.elementAt(i)).elementAt(1), (String) ((Vector)dataVector.elementAt(i)).elementAt(2));
+		}
 	}
 
 }

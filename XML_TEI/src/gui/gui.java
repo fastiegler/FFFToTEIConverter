@@ -59,11 +59,7 @@ public class gui {
 				progressBar.setValue(0);
 				frmKonvertierer.setEnabled(false);
 				// open dialog
-				if (addRepGUI == null) {
-					addRepGUI = new addToRepGUI();
-				} else {
-					addRepGUI.frmZuErsetzendenAusdruck.setVisible(true);
-				}
+				addRepGUI=new addToRepGUI(converter.getData("REP"), converter.getColumnames("REP"));
 			}
 		});
 		panel_1.add(btnAddtorep);
